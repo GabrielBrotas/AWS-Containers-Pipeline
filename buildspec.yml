@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  pre_build: 
+    commands:
+      - echo "Logging in Amazon ECR..."
+      - aws --version
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 603113125842.dkr.ecr.us-east-1.amazonaws.com
+      - REPOSITORY_URI= 603113125842.dkr.ecr.us-east-1.amazonaws.com/devops
+  build:
+    commands:
+      - echo "Build started..."
+      - docker build -t devops .
+      - docker tag devops:latest 603113125842.dkr.ecr.us-east-1.amazonaws.com/devops:latest
+
+  post_build:
+    commands:
+      - echo "Post building..."
+      - docker push 603113125842.dkr.ecr.us-east-1.amazonaws.com/devops:latest
+      # - cat imagedefinitions.json
+
+# artifacts:
+  # files: imagedefinitions.json
